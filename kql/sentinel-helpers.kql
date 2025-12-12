@@ -1,7 +1,15 @@
-// Helper KQL to analyze connection sequences in Sentinel logs
+// Helper KQL to analyze connection state sequences for detection validation
+// This query helps verify whether a malicious IP actually established a connection
+// or if the firewall blocked it (closed/dropped).
 
 CommonSecurityLog
-| where TimeGenerated > ago(1h)
-| where src_ip == "<replace_with_test_ip>"
-| project TimeGenerated, src_ip, dest_ip, Activity, Message
+| where TimeGenerated > ago(2h)
+| where SourceIP == "<test_ip>"  // Replace with sample/anonymized IP
+| where Activity in ("ConnectionOpen", "ConnectionClosed", "ConnectionEstablished")
+| project TimeGenerated, 
+          SourceIP, 
+          DestinationIP, 
+          DestinationPort,
+          Activity,
+          Message
 | order by TimeGenerated asc
