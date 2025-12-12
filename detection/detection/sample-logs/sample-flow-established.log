@@ -1,0 +1,3 @@
+# sample-flow-established.log (anonymized)
+2025-05-01T11:05:00Z | deviceB | EventType=Permitted_Network_Traffic | src_ip=198.51.100.77 | dst_ip=203.0.113.9 | src_port=40221 | dst_port=443 | protocol=TCP | session_id=efgh5678 | msg="connection_open"
+2025-05-01T11:05:02Z | deviceB | EventType=ConnectionStatus | src_ip=198.51.100.77 | dst_ip=203.0.113.9 | src_port=40221 | dst_port=443 | protocol=TCP | session_id=efgh5678 | msg="connection_established"
