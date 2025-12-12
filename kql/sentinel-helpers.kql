@@ -1,0 +1,7 @@
+// Helper KQL to analyze connection sequences in Sentinel logs
+
+CommonSecurityLog
+| where TimeGenerated > ago(1h)
+| where src_ip == "<replace_with_test_ip>"
+| project TimeGenerated, src_ip, dest_ip, Activity, Message
+| order by TimeGenerated asc
