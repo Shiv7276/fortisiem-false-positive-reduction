@@ -1,0 +1,57 @@
+{
+  "rule_name": "Permitted_Traffic_From_Malicious_MISP_IP",
+  "description": "Triggers only when a malicious IP establishes a connection and is not immediately closed/dropped, reducing false positives.",
+  
+  "pattern_definitions": {
+    "ConnectionOpen": {
+      "event_type": ["Permitted Network Traffic"],
+      "condition": "SourceIP IN MalwareIPs.MISP_Malware_IP",
+      "group_by": [
+        "ReportingIP",
+        "SourceIP",
+        "SourceCountry",
+        "SourcePort",
+        "DestinationIP",
+        "DestinationCountry",
+        "DestinationPort"
+      ]
+    },
+    "ConnectionClosed": {
+      "event_type": ["SonicOS-537"],
+      "group_by": [
+        "ReportingIP",
+        "SourceIP",
+        "SourceCountry",
+        "SourcePort",
+        "DestinationIP",
+        "DestinationCountry",
+        "DestinationPort"
+      ]
+    }
+  },
+
+  "pattern_conditions": {
+    "match": "ConnectionOpen NOT_FOLLOWED_BY ConnectionClosed",
+    "where_clause": [
+      "ConnectionOpen.SourceIP = ConnectionClosed.SourceIP",
+      "ConnectionOpen.SourcePort = ConnectionClosed.SourcePort",
+      "ConnectionOpen.DestinationIP = ConnectionClosed.DestinationIP",
+      "ConnectionOpen.DestinationPort = ConnectionClosed.DestinationPort",
+      "ConnectionOpen.ReportingIP = ConnectionClosed.ReportingIP"
+    ],
+    "time_window_seconds": 120
+  },
+
+  "incident_generation": {
+    "severity": "High",
+    "incident_name": "Permitted_Traffic_From_Malicious_MISP_IP",
+    "attributes": {
+      "SourceIP": "ConnectionOpen.SourceIP",
+      "DestinationIP": "ConnectionOpen.DestinationIP"
+    }
+  },
+
+  "watchlist_updates": {
+    "MalwareLikelyIP": "SourceIP"
+  }
+}
